@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;  
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .answers label {
+      display: block;
+      margin: 5px 0;
+    }
+    .hidden {
+      display: none;
+    }
+    .result {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Page 1: Name Input -->
+    <div id="startPage">
+      <h2>Enter Your Name</h2>
+      <input type="text" id="nameInput" placeholder="Your name here..." />
+      <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <!-- Page 2: Quiz -->
+    <div id="quizPage" class="hidden">
+      <h2 id="questionTitle">Question</h2>
+      <div class="answers" id="answersContainer"></div>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+
+    <!-- Page 3: Result -->
+    <div id="resultPage" class="hidden">
+      <h2>Quiz Result</h2>
+      <p class="result" id="resultText"></p>
+      <button onclick="location.reload()">Restart</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the capital of France?",
+        options: ["Paris", "London", "Rome", "Berlin"],
+        answer: "Paris"
+      },
+      {
+        question: "Who wrote 'Hamlet'?",
+        options: ["Charles Dickens", "William Shakespeare", "Leo Tolstoy", "Mark Twain"],
+        answer: "William Shakespeare"
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Earth", "Venus", "Mars", "Jupiter"],
+        answer: "Mars"
+      },
+      {
+        question: "What is the boiling point of water?",
+        options: ["100°C", "0°C", "50°C", "200°C"],
+        answer: "100°C"
+      },
+      {
+        question: "Which language is used to style web pages?",
+        options: ["HTML", "CSS", "JavaScript", "Python"],
+        answer: "CSS"
+      },
+      {
+        question: "Who painted the Mona Lisa?",
+        options: ["Leonardo da Vinci", "Van Gogh", "Pablo Picasso", "Claude Monet"],
+        answer: "Leonardo da Vinci"
+      },
+      {
+        question: "Which is the largest ocean on Earth?",
+        options: ["Atlantic", "Indian", "Pacific", "Arctic"],
+        answer: "Pacific"
+      },
+      {
+        question: "What gas do plants absorb from the atmosphere?",
+        options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Helium"],
+        answer: "Carbon Dioxide"
+      },
+      {
+        question: "Which organ pumps blood through the body?",
+        options: ["Brain", "Lungs", "Heart", "Liver"],
+        answer: "Heart"
+      },
+      {
+        question: "Which continent is the Sahara Desert located in?",
+        options: ["Asia", "Africa", "Australia", "South America"],
+        answer: "Africa"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let userName = "";
+
+    function startQuiz() {
+      userName = document.getElementById("nameInput").value.trim();
+      if (!userName) {
+        alert("Please enter your name!");
+        return;
+      }
+      document.getElementById("startPage").classList.add("hidden");
+      document.getElementById("quizPage").classList.remove("hidden");
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("questionTitle").innerText = `${currentQuestion + 1}. ${q.question}`;
+      const container = document.getElementById("answersContainer");
+      container.innerHTML = "";
+      q.options.forEach(opt => {
+        const id = `option_${opt}`;
+        container.innerHTML += `
+          <label>
+            <input type="radio" name="answer" value="${opt}" /> ${opt}
+          </label>
+        `;
+      });
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected) {
+        alert("Please select an answer!");
+        return;
+      }
+      if (selected.value === questions[currentQuestion].answer) {
+        score++;
+      }
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("quizPage").classList.add("hidden");
+      document.getElementById("resultPage").classList.remove("hidden");
+      document.getElementById("resultText").innerText =
+        `${userName}, you scored ${score} out of ${questions.length}.`;
+    }
+  </script>
+</body>
+</html>
